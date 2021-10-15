@@ -43,33 +43,33 @@
   </div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue'
 import axios from '~/plugins/axios'
 
-export default {
+export default Vue.extend({
   name: 'SingleMovie',
-  head () {
+  data() {
     return {
-      title: `${this.movie.title} | Movie App`
+      movie: { title: 'Movie Page' }
     }
   },
-  data () {
-    return {
-      movie: ''
-    }
-  },
-  async fetch () {
+  async fetch() {
     await this.getMovie()
   },
+  head() {
+    return {
+      title: `${(this as any).movie.title} | Movie App`
+    }
+  },
   methods: {
-    async getMovie () {
+    async getMovie() {
       const movieId = this.$route.params.movieid
       const res = await axios.get(`/movie/${movieId}`)
-      console.log(res)
       this.movie = res.data
     }
   }
-}
+})
 </script>
 
 <style lang='scss' scoped>

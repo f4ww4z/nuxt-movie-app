@@ -82,9 +82,25 @@
 </template>
 
 <script lang='ts'>
+import Vue from 'vue'
 import axios from '~/plugins/axios'
+import { Movie, MoviesResponse } from '~/interfaces/movie'
 
-export default {
+export default Vue.extend({
+  data() {
+    return {
+      movies: [] as Movie[],
+      searchedMovies: [] as Movie[],
+      searchInput: ''
+    }
+  },
+  async fetch() {
+    if (this.searchInput === '') {
+      await this.getMovies()
+    } else {
+      await this.getSearchedMovies()
+    }
+  },
   head() {
     return {
       title: 'Movie App - Latest Streaming Movie Info',
@@ -102,23 +118,9 @@ export default {
       ]
     }
   },
-  data() {
-    return {
-      movies: [],
-      searchedMovies: [],
-      searchInput: ''
-    }
-  },
-  async fetch() {
-    if (this.searchInput === '') {
-      await this.getMovies()
-    } else {
-      await this.getSearchedMovies()
-    }
-  },
   methods: {
     async getMovies() {
-      const response = await axios.get('/movie/now_playing', {
+      const response: MoviesResponse = await axios.get('/movie/now_playing', {
         params: {
           page: 1
         }
@@ -127,7 +129,7 @@ export default {
       this.movies = response.data.results
     },
     async getSearchedMovies() {
-      const response = await axios.get('/search/movie', {
+      const response: MoviesResponse = await axios.get('/search/movie', {
         params: {
           query: this.searchInput
         }
@@ -140,7 +142,7 @@ export default {
       this.searchedMovies = []
     }
   }
-}
+})
 </script>
 
 <style lang='scss'>
